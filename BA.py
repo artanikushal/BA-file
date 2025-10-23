@@ -22,12 +22,12 @@ except FileNotFoundError:
     logo_base64 = None
 
 # --------------------------
-# 🎓 Fixed Header (Compact + Larger Text)
+# 🎓 Fixed Header (Bigger Title, No Subtitle)
 # --------------------------
 header_html = f"""
     <style>
         [data-testid="stAppViewContainer"] {{
-            padding-top: 130px !important; /* Space below fixed header */
+            padding-top: 120px !important; /* Adjusts space below fixed header */
         }}
         .fixed-header {{
             position: fixed;
@@ -37,34 +37,27 @@ header_html = f"""
             background-color: white;
             box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
             z-index: 999;
-            padding: 10px 0;
+            padding: 12px 0;
         }}
         .header-content {{
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 25px;
         }}
         .header-title {{
             color: #800000;
-            font-size: 2.8rem;
-            font-weight: 800;
+            font-size: 3.5rem;
+            font-weight: 900;
             margin: 0;
-        }}
-        .header-subtitle {{
-            color: #555;
-            font-size: 1.05rem;
-            margin-top: 5px;
+            letter-spacing: 0.5px;
         }}
     </style>
 
     <div class="fixed-header">
         <div class="header-content">
-            {"<img src='data:image/png;base64," + logo_base64 + "' width='110'>" if logo_base64 else ""}
-            <div>
-                <p class="header-title">NMIMS Loan Default Risk Predictor</p>
-                <p class="header-subtitle">Predict the likelihood of borrower default using financial attributes.</p>
-            </div>
+            {"<img src='data:image/png;base64," + logo_base64 + "' width='120'>" if logo_base64 else ""}
+            <p class="header-title">NMIMS Loan Default Risk Predictor</p>
         </div>
     </div>
 """
@@ -136,7 +129,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Center button
 col1, col2, col3 = st.columns([1, 1, 1])
 with col2:
     predict_clicked = st.button("🔍 Predict Default Risk")
@@ -174,5 +166,4 @@ if predict_clicked:
             unsafe_allow_html=True,
         )
 
-    # Add a small gap below
     st.markdown("<div style='height:80px;'></div>", unsafe_allow_html=True)
