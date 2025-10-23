@@ -26,7 +26,7 @@ except FileNotFoundError:
 # --------------------------
 header_html = f"""
     <style>
-        /* Hide Streamlit's top-right menu and footer */
+        /* Hide Streamlit's menu and footer */
         #MainMenu {{visibility: hidden;}}
         footer {{visibility: hidden;}}
         header {{visibility: hidden;}}
@@ -112,7 +112,7 @@ z = (
 prob_default = 1 / (1 + np.exp(-z))
 
 # --------------------------
-# 🎨 Predict Button
+# 🎨 Predict Button (Centered)
 # --------------------------
 st.markdown(
     """
@@ -148,7 +148,7 @@ with col2:
     predict_clicked = st.button("Predict Default Risk")
 
 # --------------------------
-# 📊 Prediction Result (Professional Minimal Output)
+# 📊 Prediction Result (Professional Look)
 # --------------------------
 if predict_clicked:
     st.markdown("<div style='margin-top: 2rem;'></div>", unsafe_allow_html=True)
@@ -163,7 +163,7 @@ if predict_clicked:
             <div style='text-align:center; color:#b00000; 
                         font-size:70px; font-weight:900; 
                         margin-top:2rem;'>
-                ⚠️ RISKY
+                RISKY
             </div>
             """,
             unsafe_allow_html=True,
@@ -174,7 +174,7 @@ if predict_clicked:
             <div style='text-align:center; color:#007700; 
                         font-size:70px; font-weight:900; 
                         margin-top:2rem;'>
-                ✅ NOT RISKY
+                NOT RISKY
             </div>
             """,
             unsafe_allow_html=True,
