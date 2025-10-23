@@ -6,13 +6,13 @@ import base64
 # --------------------------
 # 🏠 Page Setup
 # --------------------------
-st.set_page_config(page_title="Loan Default Predictor", page_icon="💰", layout="centered")
+st.set_page_config(page_title="NMIMS Loan Default Predictor", page_icon="💰", layout="centered")
 
 # --------------------------
-# 🎓 Load Local Logo and Encode
+# 🖼️ Load Local Logo
 # --------------------------
 def get_base64_image(image_path):
-    """Convert image to base64 for embedding."""
+    """Convert image to base64 for embedding in header."""
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
@@ -22,12 +22,12 @@ except FileNotFoundError:
     logo_base64 = None
 
 # --------------------------
-# 🎓 Fixed Header (Bigger Title, No Subtitle)
+# 🎓 Fixed Header (Big Title + Wide Layout)
 # --------------------------
 header_html = f"""
     <style>
         [data-testid="stAppViewContainer"] {{
-            padding-top: 120px !important; /* Adjusts space below fixed header */
+            padding-top: 130px !important;
         }}
         .fixed-header {{
             position: fixed;
@@ -35,37 +35,43 @@ header_html = f"""
             left: 0;
             width: 100%;
             background-color: white;
-            box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
-            z-index: 999;
-            padding: 12px 0;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 18px 0;
         }}
         .header-content {{
+            max-width: 1000px;
+            margin: 0 auto;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            gap: 25px;
+            padding: 0 40px;
         }}
         .header-title {{
             color: #800000;
-            font-size: 3.5rem;
+            font-size: 3.8rem;
             font-weight: 900;
             margin: 0;
             letter-spacing: 0.5px;
+        }}
+        .header-logo {{
+            width: 130px;
         }}
     </style>
 
     <div class="fixed-header">
         <div class="header-content">
-            {"<img src='data:image/png;base64," + logo_base64 + "' width='120'>" if logo_base64 else ""}
             <p class="header-title">NMIMS Loan Default Risk Predictor</p>
+            {"<img class='header-logo' src='data:image/png;base64," + logo_base64 + "'>" if logo_base64 else ""}
         </div>
     </div>
 """
 st.markdown(header_html, unsafe_allow_html=True)
 
 # --------------------------
-# 🧮 Input Section
+# 🧮 Input Section (Centered & Clean)
 # --------------------------
+st.markdown("<div style='max-width:700px; margin:auto;'>", unsafe_allow_html=True)
 st.subheader("Enter Borrower Details")
 
 income = st.text_input("Monthly Income (₹)", value="50000")
@@ -73,6 +79,8 @@ employment = st.selectbox("Employment Status", ["Salaried", "Self Employed"])
 location = st.selectbox("Location", ["Urban", "Rural"])
 loan_type = st.selectbox("Loan Type", ["Home", "Personal"])
 rating = st.selectbox("Credit Rating", ["Good", "Bad"])
+
+st.markdown("</div>", unsafe_allow_html=True)
 
 # --------------------------
 # 🧠 Logistic Regression Model
@@ -88,7 +96,6 @@ emp_val = 1 if employment == "Self Employed" else 0
 loc_val = 1 if location == "Urban" else 0
 rating_val = 1 if rating == "Good" else 0
 
-# full-precision coefficients
 z = (
     7.80381648105447
     + (-1.17906553604e-05 * income_val)
@@ -100,7 +107,7 @@ z = (
 prob_default = 1 / (1 + np.exp(-z))
 
 # --------------------------
-# 🎨 Center-Aligned Predict Button
+# 🎨 Predict Button (Centered)
 # --------------------------
 st.markdown(
     """
@@ -108,7 +115,8 @@ st.markdown(
         .center-button {
             display: flex;
             justify-content: center;
-            margin-top: 30px;
+            margin-top: 35px;
+            margin-bottom: 50px;
         }
         div.stButton > button:first-child {
             background-color: #800000;
@@ -134,7 +142,7 @@ with col2:
     predict_clicked = st.button("🔍 Predict Default Risk")
 
 # --------------------------
-# 📊 Prediction Result
+# 📊 Prediction Result (Big Text, Centered)
 # --------------------------
 if predict_clicked:
     st.markdown("<div style='margin-top: 2rem;'></div>", unsafe_allow_html=True)
@@ -147,8 +155,8 @@ if predict_clicked:
         st.markdown(
             """
             <div style='text-align:center; background-color:#ffe6e6; color:red; 
-                        font-size:60px; font-weight:800; border-radius:18px; 
-                        padding:1.2rem; margin-top:1.5rem;'>
+                        font-size:70px; font-weight:900; border-radius:20px; 
+                        padding:1.5rem; margin-top:1.5rem;'>
                 ⚠️ RISKY
             </div>
             """,
@@ -158,8 +166,8 @@ if predict_clicked:
         st.markdown(
             """
             <div style='text-align:center; background-color:#e6ffe6; color:green; 
-                        font-size:60px; font-weight:800; border-radius:18px; 
-                        padding:1.2rem; margin-top:1.5rem;'>
+                        font-size:70px; font-weight:900; border-radius:20px; 
+                        padding:1.5rem; margin-top:1.5rem;'>
                 ✅ NOT RISKY
             </div>
             """,
