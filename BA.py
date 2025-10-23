@@ -1,6 +1,8 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
+import base64
+from io import BytesIO
 
 # --------------------------
 # 🏠 Page Setup
@@ -8,16 +10,27 @@ from PIL import Image
 st.set_page_config(page_title="Loan Default Predictor", page_icon="💰", layout="centered")
 
 # --------------------------
-# 🎓 Fixed Header with Logo
+# 🎓 Load Local Logo and Encode for Fixed Header
 # --------------------------
-st.markdown(
-    """
+def get_base64_image(image_path):
+    """Convert image to base64 to embed in HTML."""
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
+
+try:
+    logo_base64 = get_base64_image("nmims-university-logo.png")
+except FileNotFoundError:
+    logo_base64 = None
+
+# --------------------------
+# 🎓 Fixed Header (with local logo)
+# --------------------------
+header_html = f"""
     <style>
-        /* ===== Fixed Header ===== */
-        [data-testid="stAppViewContainer"] {
-            padding-top: 160px !important; /* pushes content below fixed header */
-        }
-        .fixed-header {
+        [data-testid="stAppViewContainer"] {{
+            padding-top: 160px !important; /* Space below fixed header */
+        }}
+        .fixed-header {{
             position: fixed;
             top: 0;
             left: 0;
@@ -26,41 +39,40 @@ st.markdown(
             box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
             z-index: 999;
             padding: 10px 0 5px 0;
-        }
-        .header-content {
+        }}
+        .header-content {{
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 15px;
-        }
-        .header-title {
+        }}
+        .header-title {{
             color: #800000;
             font-size: 1.9rem;
             font-weight: 700;
             margin: 0;
-        }
-        .header-subtitle {
+        }}
+        .header-subtitle {{
             color: #555;
             font-size: 0.9rem;
             margin-top: 2px;
-        }
+        }}
     </style>
 
     <div class="fixed-header">
         <div class="header-content">
-            <img src="https://upload.wikimedia.org/wikipedia/en/0/0b/NMIMS_University_Logo.png" width="70">
+            {"<img src='data:image/png;base64," + logo_base64 + "' width='70'>" if logo_base64 else ""}
             <div>
                 <p class="header-title">NMIMS Loan Default Risk Predictor</p>
                 <p class="header-subtitle">Predict borrower default likelihood using borrower details.</p>
             </div>
         </div>
     </div>
-    """,
-    unsafe_allow_html=True,
-)
+"""
+st.markdown(header_html, unsafe_allow_html=True)
 
 # --------------------------
-# 🧮 Inputs
+# 🧮 Input Section
 # --------------------------
 st.subheader("Enter Borrower Details")
 
@@ -121,6 +133,9 @@ st.markdown(
 
 st.markdown("---")
 
+# --------------------------
+# 🔍 Prediction Result
+# --------------------------
 if st.button("🔍 Predict Default Risk"):
     st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
     st.markdown(
