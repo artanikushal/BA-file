@@ -22,12 +22,12 @@ except FileNotFoundError:
     logo_base64 = None
 
 # --------------------------
-# 🎓 Fixed Header (larger and cleaner)
+# 🎓 Fixed Header (Compact + Larger Text)
 # --------------------------
 header_html = f"""
     <style>
         [data-testid="stAppViewContainer"] {{
-            padding-top: 200px !important; /* Space for header */
+            padding-top: 130px !important; /* Space below fixed header */
         }}
         .fixed-header {{
             position: fixed;
@@ -35,35 +35,35 @@ header_html = f"""
             left: 0;
             width: 100%;
             background-color: white;
-            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
             z-index: 999;
-            padding: 18px 0 12px 0;
+            padding: 10px 0;
         }}
         .header-content {{
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 18px;
+            gap: 20px;
         }}
         .header-title {{
             color: #800000;
-            font-size: 2.3rem;
+            font-size: 2.8rem;
             font-weight: 800;
             margin: 0;
         }}
         .header-subtitle {{
             color: #555;
-            font-size: 1rem;
-            margin-top: 4px;
+            font-size: 1.05rem;
+            margin-top: 5px;
         }}
     </style>
 
     <div class="fixed-header">
         <div class="header-content">
-            {"<img src='data:image/png;base64," + logo_base64 + "' width='90'>" if logo_base64 else ""}
+            {"<img src='data:image/png;base64," + logo_base64 + "' width='110'>" if logo_base64 else ""}
             <div>
                 <p class="header-title">NMIMS Loan Default Risk Predictor</p>
-                <p class="header-subtitle">Predict the likelihood of borrower default based on key details.</p>
+                <p class="header-subtitle">Predict the likelihood of borrower default using financial attributes.</p>
             </div>
         </div>
     </div>
@@ -95,7 +95,7 @@ emp_val = 1 if employment == "Self Employed" else 0
 loc_val = 1 if location == "Urban" else 0
 rating_val = 1 if rating == "Good" else 0
 
-# full precision coefficients
+# full-precision coefficients
 z = (
     7.80381648105447
     + (-1.17906553604e-05 * income_val)
@@ -121,9 +121,9 @@ st.markdown(
             background-color: #800000;
             color: white;
             font-weight: 600;
-            font-size: 20px;
+            font-size: 22px;
             border-radius: 12px;
-            padding: 0.8rem 2rem;
+            padding: 0.9rem 2.5rem;
             border: none;
             transition: all 0.3s ease;
         }
@@ -136,12 +136,10 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Create a center container for the button
-button_placeholder = st.container()
-with button_placeholder:
-    col1, col2, col3 = st.columns([1, 1, 1])
-    with col2:
-        predict_clicked = st.button("🔍 Predict Default Risk")
+# Center button
+col1, col2, col3 = st.columns([1, 1, 1])
+with col2:
+    predict_clicked = st.button("🔍 Predict Default Risk")
 
 # --------------------------
 # 📊 Prediction Result
@@ -176,5 +174,5 @@ if predict_clicked:
             unsafe_allow_html=True,
         )
 
-    # add space at bottom
-    st.markdown("<div style='height:120px;'></div>", unsafe_allow_html=True)
+    # Add a small gap below
+    st.markdown("<div style='height:80px;'></div>", unsafe_allow_html=True)
