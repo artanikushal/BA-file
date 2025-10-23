@@ -9,7 +9,7 @@ import base64
 st.set_page_config(page_title="NMIMS Loan Default Predictor", page_icon="💰", layout="centered")
 
 # --------------------------
-# 🖼️ Load Local Logo
+# 🖼️ Load Logo (Local)
 # --------------------------
 def get_base64_image(image_path):
     """Convert image to base64 for embedding in header."""
@@ -22,7 +22,7 @@ except FileNotFoundError:
     logo_base64 = None
 
 # --------------------------
-# 🎓 Fixed Header (Big Title + Wide Layout)
+# 🎓 Fixed Header (Wide & Elegant)
 # --------------------------
 header_html = f"""
     <style>
@@ -34,10 +34,10 @@ header_html = f"""
             top: 0;
             left: 0;
             width: 100%;
-            background-color: white;
-            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+            background-color: #ffffff;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
             z-index: 1000;
-            padding: 18px 0;
+            padding: 20px 0;
         }}
         .header-content {{
             max-width: 1000px;
@@ -45,17 +45,17 @@ header_html = f"""
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 40px;
+            padding: 0 50px;
         }}
         .header-title {{
             color: #800000;
-            font-size: 3.8rem;
+            font-size: 4rem;
             font-weight: 900;
             margin: 0;
             letter-spacing: 0.5px;
         }}
         .header-logo {{
-            width: 130px;
+            width: 150px;
         }}
     </style>
 
@@ -69,7 +69,7 @@ header_html = f"""
 st.markdown(header_html, unsafe_allow_html=True)
 
 # --------------------------
-# 🧮 Input Section (Centered & Clean)
+# 🧮 Input Section (Clean & Centered)
 # --------------------------
 st.markdown("<div style='max-width:700px; margin:auto;'>", unsafe_allow_html=True)
 st.subheader("Enter Borrower Details")
@@ -107,7 +107,7 @@ z = (
 prob_default = 1 / (1 + np.exp(-z))
 
 # --------------------------
-# 🎨 Predict Button (Centered)
+# 🎨 Predict Button (Modern, Single Line, Centered)
 # --------------------------
 st.markdown(
     """
@@ -116,20 +116,21 @@ st.markdown(
             display: flex;
             justify-content: center;
             margin-top: 35px;
-            margin-bottom: 50px;
+            margin-bottom: 60px;
         }
         div.stButton > button:first-child {
-            background-color: #800000;
+            background: linear-gradient(135deg, #800000 0%, #b00000 100%);
             color: white;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 22px;
-            border-radius: 12px;
-            padding: 0.9rem 2.5rem;
+            border-radius: 14px;
+            padding: 1rem 2.5rem;
             border: none;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
         }
         div.stButton > button:first-child:hover {
-            background-color: #a00000;
+            background: linear-gradient(135deg, #a00000 0%, #d00000 100%);
             transform: scale(1.05);
         }
     </style>
@@ -139,24 +140,30 @@ st.markdown(
 
 col1, col2, col3 = st.columns([1, 1, 1])
 with col2:
-    predict_clicked = st.button("🔍 Predict Default Risk")
+    predict_clicked = st.button("Predict Default Risk")
 
 # --------------------------
-# 📊 Prediction Result (Big Text, Centered)
+# 📊 Prediction Result (Professional Display)
 # --------------------------
 if predict_clicked:
     st.markdown("<div style='margin-top: 2rem;'></div>", unsafe_allow_html=True)
     st.markdown(
-        f"<h3 style='text-align:center; color:#333;'>Predicted Probability of Default: {prob_default * 100:.4f}%</h3>",
+        f"<h3 style='text-align:center; color:#222;'>Predicted Probability of Default: <b>{prob_default * 100:.2f}%</b></h3>",
         unsafe_allow_html=True,
     )
 
     if prob_default >= 0.5:
         st.markdown(
             """
-            <div style='text-align:center; background-color:#ffe6e6; color:red; 
-                        font-size:70px; font-weight:900; border-radius:20px; 
-                        padding:1.5rem; margin-top:1.5rem;'>
+            <div style='text-align:center; 
+                        background: linear-gradient(135deg, #ffcccc, #ff6666);
+                        color:#a00000; 
+                        font-size:55px; 
+                        font-weight:900; 
+                        border-radius:18px; 
+                        padding:1.5rem; 
+                        margin-top:2rem;
+                        box-shadow: 0px 6px 20px rgba(255,0,0,0.2);'>
                 ⚠️ RISKY
             </div>
             """,
@@ -165,9 +172,15 @@ if predict_clicked:
     else:
         st.markdown(
             """
-            <div style='text-align:center; background-color:#e6ffe6; color:green; 
-                        font-size:70px; font-weight:900; border-radius:20px; 
-                        padding:1.5rem; margin-top:1.5rem;'>
+            <div style='text-align:center; 
+                        background: linear-gradient(135deg, #ccffcc, #66ff99);
+                        color:#006600; 
+                        font-size:55px; 
+                        font-weight:900; 
+                        border-radius:18px; 
+                        padding:1.5rem; 
+                        margin-top:2rem;
+                        box-shadow: 0px 6px 20px rgba(0,255,0,0.2);'>
                 ✅ NOT RISKY
             </div>
             """,
