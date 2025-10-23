@@ -73,4 +73,4 @@ prob_default = 1 / (1 + np.exp(-z))
 if st.button("Predict Default Risk"):
     st.subheader("📈 Prediction Result")
 
-    st.write(f"**Predicted Probability of Default:** {prob_default*100:.2f}%")*
+    st.write(f"**Predicted Probability of Default:** {prob_default*100:.2f}%")*_
