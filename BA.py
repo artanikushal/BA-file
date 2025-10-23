@@ -26,11 +26,6 @@ except FileNotFoundError:
 # --------------------------
 header_html = f"""
     <style>
-        /* Hide Streamlit's top-right menu and footer */
-        #MainMenu {{visibility: hidden;}}
-        footer {{visibility: hidden;}}
-        header {{visibility: hidden;}}
-
         [data-testid="stAppViewContainer"] {{
             padding-top: 130px !important;
         }}
@@ -79,7 +74,7 @@ st.markdown(header_html, unsafe_allow_html=True)
 st.markdown("<div style='max-width:700px; margin:auto;'>", unsafe_allow_html=True)
 st.subheader("Enter Borrower Details")
 
-income = st.text_input("Annual Income (₹)", value="600000")
+income = st.text_input("Monthly Income (₹)", value="50000")
 employment = st.selectbox("Employment Status", ["Salaried", "Self Employed"])
 location = st.selectbox("Location", ["Urban", "Rural"])
 loan_type = st.selectbox("Loan Type", ["Home", "Personal"])
