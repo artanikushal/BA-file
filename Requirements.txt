@@ -1,5 +1,6 @@
 pandas
 numpy
 streamlit
-plotly
+plotly.graph_objects
 pillow
+
