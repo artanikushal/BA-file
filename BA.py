@@ -1,13 +1,15 @@
+# ==========================
+# 🎓 NMIMS Loan Default Predictor Dashboard (Simple Version)
+# ==========================
+
 import streamlit as st
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from PIL import Image
 
 # --------------------------
 # 🏠 Page setup
 # --------------------------
-st.set_page_config(page_title="NMIMS Loan Default Predictor", page_icon="🏦", layout="wide")
+st.set_page_config(page_title="NMIMS Loan Default Predictor", page_icon="nmims-university-logo.png", layout="wide")
 
 # --------------------------
 # 📘 Header with logo
@@ -20,7 +22,7 @@ with col2:
     try:
         logo = Image.open("nmims-university-logo.png")
         st.image(logo, width=120)
-    except Exception:
+    except:
         st.warning("NMIMS Logo not found — please ensure 'nmims-university-logo.png' is in the same folder.")
 
 st.markdown("---")
@@ -44,13 +46,6 @@ st.markdown("---")
 # --------------------------
 # 🧠 Logistic Regression Model
 # --------------------------
-# Intercept = 7.8038
-# Income = -0.0000117906553604
-# Personal – Home = 2.1736
-# Self Employed – Salaried = 1.2768
-# Urban – Rural = -2.4431
-# Good – Bad = -2.5169
-
 try:
     income_val = float(income)
 except:
@@ -73,45 +68,9 @@ z = (
 prob_default = 1 / (1 + np.exp(-z))
 
 # --------------------------
-# 📊 Semi-Circle Default Risk Indicator (Matplotlib)
-# --------------------------
-def draw_semi_circle(prob):
-    fig, ax = plt.subplots(figsize=(5, 2.5))
-    ax.set_xlim(-1.2, 1.2)
-    ax.set_ylim(0, 1.2)
-    ax.axis("off")
-
-    # Draw background semicircle
-    theta = np.linspace(0, np.pi, 200)
-    ax.fill_between(np.cos(theta), 0, np.sin(theta), color="lightgray", alpha=0.3)
-
-    # Determine color based on probability
-    color = "green" if prob < 0.5 else "red"
-    label = "Low Default Risk" if prob < 0.5 else "High Default Risk"
-
-    # Draw filled risk indicator
-    cutoff = prob * np.pi
-    theta_fill = np.linspace(0, cutoff, 100)
-    ax.fill_between(np.cos(theta_fill), 0, np.sin(theta_fill), color=color, alpha=0.7)
-
-    # Add text
-    ax.text(0, -0.15, f"Default Probability: {prob*100:.1f}%", 
-            ha="center", fontsize=12, fontweight="bold")
-    ax.text(0, 0.6, label, ha="center", fontsize=14, color=color, fontweight="bold")
-
-    return fig
-
-# --------------------------
 # 🚀 Predict Button
 # --------------------------
 if st.button("Predict Default Risk"):
     st.subheader("📈 Prediction Result")
-    st.write(f"**Predicted Probability of Default:** {prob_default*100:.2f}%")
 
-    if prob_default >= 0.5:
-        st.error("⚠️ High risk of default detected.")
-    else:
-        st.success("✅ Low risk borrower.")
-
-    fig = draw_semi_circle(prob_default)
-    st.pyplot(fig)
+    st.write(f"**Predicted Probability of Default:** {prob_default*100:.2f}%")*_
