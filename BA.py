@@ -9,10 +9,10 @@ import base64
 st.set_page_config(page_title="NMIMS Loan Default Predictor", page_icon="💰", layout="centered")
 
 # --------------------------
-# 🖼️ Load Logo (Local)
+# 🖼️ Load Logo
 # --------------------------
 def get_base64_image(image_path):
-    """Convert image to base64 for embedding in header."""
+    """Convert image to base64 for embedding."""
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
@@ -22,7 +22,7 @@ except FileNotFoundError:
     logo_base64 = None
 
 # --------------------------
-# 🎓 Fixed Header (Wide & Elegant)
+# 🎓 Fixed Header (Wide & Clean)
 # --------------------------
 header_html = f"""
     <style>
@@ -69,7 +69,7 @@ header_html = f"""
 st.markdown(header_html, unsafe_allow_html=True)
 
 # --------------------------
-# 🧮 Input Section (Clean & Centered)
+# 🧮 Input Section (Clean)
 # --------------------------
 st.markdown("<div style='max-width:700px; margin:auto;'>", unsafe_allow_html=True)
 st.subheader("Enter Borrower Details")
@@ -107,7 +107,7 @@ z = (
 prob_default = 1 / (1 + np.exp(-z))
 
 # --------------------------
-# 🎨 Predict Button (Modern, Single Line, Centered)
+# 🎨 Predict Button
 # --------------------------
 st.markdown(
     """
@@ -143,7 +143,7 @@ with col2:
     predict_clicked = st.button("Predict Default Risk")
 
 # --------------------------
-# 📊 Prediction Result (Professional Display)
+# 📊 Prediction Result (Professional Minimal Output)
 # --------------------------
 if predict_clicked:
     st.markdown("<div style='margin-top: 2rem;'></div>", unsafe_allow_html=True)
@@ -155,15 +155,9 @@ if predict_clicked:
     if prob_default >= 0.5:
         st.markdown(
             """
-            <div style='text-align:center; 
-                        background: linear-gradient(135deg, #ffcccc, #ff6666);
-                        color:#a00000; 
-                        font-size:55px; 
-                        font-weight:900; 
-                        border-radius:18px; 
-                        padding:1.5rem; 
-                        margin-top:2rem;
-                        box-shadow: 0px 6px 20px rgba(255,0,0,0.2);'>
+            <div style='text-align:center; color:#b00000; 
+                        font-size:70px; font-weight:900; 
+                        margin-top:2rem;'>
                 ⚠️ RISKY
             </div>
             """,
@@ -172,15 +166,9 @@ if predict_clicked:
     else:
         st.markdown(
             """
-            <div style='text-align:center; 
-                        background: linear-gradient(135deg, #ccffcc, #66ff99);
-                        color:#006600; 
-                        font-size:55px; 
-                        font-weight:900; 
-                        border-radius:18px; 
-                        padding:1.5rem; 
-                        margin-top:2rem;
-                        box-shadow: 0px 6px 20px rgba(0,255,0,0.2);'>
+            <div style='text-align:center; color:#007700; 
+                        font-size:70px; font-weight:900; 
+                        margin-top:2rem;'>
                 ✅ NOT RISKY
             </div>
             """,
