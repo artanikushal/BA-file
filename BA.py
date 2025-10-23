@@ -2,7 +2,6 @@ import streamlit as st
 import numpy as np
 from PIL import Image
 import base64
-from io import BytesIO
 
 # --------------------------
 # 🏠 Page Setup
@@ -10,10 +9,10 @@ from io import BytesIO
 st.set_page_config(page_title="Loan Default Predictor", page_icon="💰", layout="centered")
 
 # --------------------------
-# 🎓 Load Local Logo and Encode for Fixed Header
+# 🎓 Load Local Logo and Encode
 # --------------------------
 def get_base64_image(image_path):
-    """Convert image to base64 to embed in HTML."""
+    """Convert image to base64 for embedding."""
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
@@ -23,12 +22,12 @@ except FileNotFoundError:
     logo_base64 = None
 
 # --------------------------
-# 🎓 Fixed Header (with local logo)
+# 🎓 Fixed Header (larger and cleaner)
 # --------------------------
 header_html = f"""
     <style>
         [data-testid="stAppViewContainer"] {{
-            padding-top: 160px !important; /* Space below fixed header */
+            padding-top: 200px !important; /* Space for header */
         }}
         .fixed-header {{
             position: fixed;
@@ -38,33 +37,33 @@ header_html = f"""
             background-color: white;
             box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
             z-index: 999;
-            padding: 10px 0 5px 0;
+            padding: 18px 0 12px 0;
         }}
         .header-content {{
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
+            gap: 18px;
         }}
         .header-title {{
             color: #800000;
-            font-size: 1.9rem;
-            font-weight: 700;
+            font-size: 2.3rem;
+            font-weight: 800;
             margin: 0;
         }}
         .header-subtitle {{
             color: #555;
-            font-size: 0.9rem;
-            margin-top: 2px;
+            font-size: 1rem;
+            margin-top: 4px;
         }}
     </style>
 
     <div class="fixed-header">
         <div class="header-content">
-            {"<img src='data:image/png;base64," + logo_base64 + "' width='70'>" if logo_base64 else ""}
+            {"<img src='data:image/png;base64," + logo_base64 + "' width='90'>" if logo_base64 else ""}
             <div>
                 <p class="header-title">NMIMS Loan Default Risk Predictor</p>
-                <p class="header-subtitle">Predict borrower default likelihood using borrower details.</p>
+                <p class="header-subtitle">Predict the likelihood of borrower default based on key details.</p>
             </div>
         </div>
     </div>
@@ -83,7 +82,7 @@ loan_type = st.selectbox("Loan Type", ["Home", "Personal"])
 rating = st.selectbox("Credit Rating", ["Good", "Bad"])
 
 # --------------------------
-# 🧠 Model Calculation (Full Precision)
+# 🧠 Logistic Regression Model
 # --------------------------
 try:
     income_val = float(income)
@@ -96,6 +95,7 @@ emp_val = 1 if employment == "Self Employed" else 0
 loc_val = 1 if location == "Urban" else 0
 rating_val = 1 if rating == "Good" else 0
 
+# full precision coefficients
 z = (
     7.80381648105447
     + (-1.17906553604e-05 * income_val)
@@ -107,18 +107,23 @@ z = (
 prob_default = 1 / (1 + np.exp(-z))
 
 # --------------------------
-# 🚀 Styled Predict Button
+# 🎨 Center-Aligned Predict Button
 # --------------------------
 st.markdown(
     """
     <style>
+        .center-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
         div.stButton > button:first-child {
             background-color: #800000;
             color: white;
             font-weight: 600;
-            font-size: 18px;
+            font-size: 20px;
             border-radius: 12px;
-            padding: 0.6rem 1.5rem;
+            padding: 0.8rem 2rem;
             border: none;
             transition: all 0.3s ease;
         }
@@ -131,15 +136,20 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.markdown("---")
+# Create a center container for the button
+button_placeholder = st.container()
+with button_placeholder:
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col2:
+        predict_clicked = st.button("🔍 Predict Default Risk")
 
 # --------------------------
-# 🔍 Prediction Result
+# 📊 Prediction Result
 # --------------------------
-if st.button("🔍 Predict Default Risk"):
-    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
+if predict_clicked:
+    st.markdown("<div style='margin-top: 2rem;'></div>", unsafe_allow_html=True)
     st.markdown(
-        f"<h3 style='text-align:center; color:#444;'>Predicted Probability of Default: {prob_default * 100:.4f}%</h3>",
+        f"<h3 style='text-align:center; color:#333;'>Predicted Probability of Default: {prob_default * 100:.4f}%</h3>",
         unsafe_allow_html=True,
     )
 
@@ -147,8 +157,8 @@ if st.button("🔍 Predict Default Risk"):
         st.markdown(
             """
             <div style='text-align:center; background-color:#ffe6e6; color:red; 
-                        font-size:58px; font-weight:700; border-radius:16px; 
-                        padding:1rem; margin-top:1rem;'>
+                        font-size:60px; font-weight:800; border-radius:18px; 
+                        padding:1.2rem; margin-top:1.5rem;'>
                 ⚠️ RISKY
             </div>
             """,
@@ -158,10 +168,13 @@ if st.button("🔍 Predict Default Risk"):
         st.markdown(
             """
             <div style='text-align:center; background-color:#e6ffe6; color:green; 
-                        font-size:58px; font-weight:700; border-radius:16px; 
-                        padding:1rem; margin-top:1rem;'>
+                        font-size:60px; font-weight:800; border-radius:18px; 
+                        padding:1.2rem; margin-top:1.5rem;'>
                 ✅ NOT RISKY
             </div>
             """,
             unsafe_allow_html=True,
         )
+
+    # add space at bottom
+    st.markdown("<div style='height:120px;'></div>", unsafe_allow_html=True)
