@@ -1,9 +1,5 @@
 import streamlit as st
-import joblib
 import numpy as np
-
-# Load your trained model
-model = joblib.load("model.pkl")  # Ensure model.pkl is in the same folder
 
 # --- Page Config ---
 st.set_page_config(page_title="Credit Risk Evaluation", layout="wide")
@@ -74,7 +70,6 @@ st.markdown(
 
 # --- Main content ---
 st.markdown("<div class='content'>", unsafe_allow_html=True)
-
 st.subheader("Enter Customer Details")
 
 col1, col2, col3 = st.columns(3)
@@ -107,7 +102,7 @@ credit_good = 1 if credit_score == "Good" else 0
 # Location: Rural as base
 loc_urban = 1 if location == "Urban" else 0
 
-# --- Apply model coefficients (from your table) ---
+# --- Logistic Regression Coefficients (from your data) ---
 intercept = 5.3551976259790495
 coef_income = -0.0000259617687418
 coef_emp_self = 1.6580628910103044
@@ -124,4 +119,17 @@ log_odds = (
     + coef_emp_self * emp_self
     + coef_emp_unemp * emp_unemp
     + coef_loan_home * loan_home
-    + coef_loan_personal
+    + coef_loan_personal * loan_personal
+    + coef_credit_good * credit_good
+    + coef_loc_urban * loc_urban
+)
+prob_default = 1 / (1 + np.exp(-log_odds))
+
+# --- Display result ---
+if st.button("Predict Credit Risk"):
+    if prob_default >= 0.5:
+        st.markdown("<p class='output-text' style='color:red;'>RISKY</p>", unsafe_allow_html=True)
+    else:
+        st.markdown("<p class='output-text' style='color:green;'>NOT RISKY</p>", unsafe_allow_html=True)
+
+st.markdown("</div>", unsafe_allow_html=True)
