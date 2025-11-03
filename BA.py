@@ -1,7 +1,6 @@
 import streamlit as st
 import joblib
 import numpy as np
-from PIL import Image
 
 # Load your trained model
 model = joblib.load("model.pkl")  # Ensure model.pkl is in the same folder
@@ -21,7 +20,7 @@ st.markdown("""
         align-items: center;
         justify-content: center;
         background-color: white;
-        padding: 20px 0;
+        padding: 25px 0;
         border-bottom: 2px solid #eee;
         position: fixed;
         top: 0;
@@ -29,12 +28,12 @@ st.markdown("""
         z-index: 999;
     }
     .main-header img {
-        height: 80px;
+        height: 90px;
         margin-right: 20px;
     }
     .main-header h1 {
-        font-size: 36px;
-        font-weight: 700;
+        font-size: 42px;
+        font-weight: 750;
         letter-spacing: 0.5px;
         margin: 0;
     }
@@ -44,7 +43,7 @@ st.markdown("""
     }
     .stButton > button {
         display: block;
-        margin: 30px auto;
+        margin: 40px auto;
         font-size: 18px !important;
         font-weight: 600;
         background-color: #2b7de9 !important;
@@ -55,9 +54,9 @@ st.markdown("""
     }
     .output-text {
         text-align: center;
-        font-size: 28px;
+        font-size: 30px;
         font-weight: bold;
-        margin-top: 30px;
+        margin-top: 35px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -76,5 +75,53 @@ st.markdown(
 # --- Main content ---
 st.markdown("<div class='content'>", unsafe_allow_html=True)
 
-# Upload logo or image section
-uploaded
+st.subheader("Enter Customer Details")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    employment_status = st.selectbox("Employment Status", ["Salaried", "Self Employed", "Unemployed"])
+    loan_type = st.selectbox("Loan Type", ["Car", "Home", "Personal"])
+
+with col2:
+    credit_score = st.selectbox("Credit Score Rating", ["Good", "Bad"])
+    location = st.selectbox("Location", ["Urban", "Rural"])
+
+with col3:
+    monthly_income = st.number_input("Monthly Income", min_value=1000, step=100, value=30000)
+
+# --- Encode categorical variables (base levels aligned with model coefficients) ---
+income = monthly_income
+
+# Employment status: Salaried as base
+emp_self = 1 if employment_status == "Self Employed" else 0
+emp_unemp = 1 if employment_status == "Unemployed" else 0
+
+# Loan type: Car as base
+loan_home = 1 if loan_type == "Home" else 0
+loan_personal = 1 if loan_type == "Personal" else 0
+
+# Credit Score Rating: Bad as base
+credit_good = 1 if credit_score == "Good" else 0
+
+# Location: Rural as base
+loc_urban = 1 if location == "Urban" else 0
+
+# --- Apply model coefficients (from your table) ---
+intercept = 5.3551976259790495
+coef_income = -0.0000259617687418
+coef_emp_self = 1.6580628910103044
+coef_emp_unemp = 4.4818219836163369
+coef_loan_home = -2.4986504193573835
+coef_loan_personal = 1.6928703494225534
+coef_credit_good = -4.6784777493614556
+coef_loc_urban = -1.5705748584574404
+
+# --- Logistic regression calculation ---
+log_odds = (
+    intercept
+    + coef_income * income
+    + coef_emp_self * emp_self
+    + coef_emp_unemp * emp_unemp
+    + coef_loan_home * loan_home
+    + coef_loan_personal
