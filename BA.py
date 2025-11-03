@@ -1,94 +1,84 @@
+# ==========================
+# 🎓 NMIMS Loan Default Predictor Dashboard (Problem 2: Credit Risk Evaluation – Current Default)
+# ==========================
+
 import streamlit as st
 import numpy as np
 from PIL import Image
-import base64
 
 # --------------------------
-# 🏠 Page Setup
+# 🏠 Page setup
 # --------------------------
-st.set_page_config(page_title="NMIMS Loan Default Predictor", page_icon="💰", layout="centered")
+st.set_page_config(page_title="Credit Risk Evaluation - Current Default", layout="wide")
 
 # --------------------------
-# 🖼️ Load Logo
+# 📘 Fixed Header with Logo
 # --------------------------
-def get_base64_image(image_path):
-    """Convert image to base64 for embedding."""
-    with open(image_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode()
-
-try:
-    logo_base64 = get_base64_image("nmims-university-logo.png")
-except FileNotFoundError:
-    logo_base64 = None
-
-# --------------------------
-# 🎓 Fixed Header (Wide & Clean)
-# --------------------------
-header_html = f"""
+st.markdown("""
     <style>
-        /* Hide Streamlit's menu and footer */
-        #MainMenu {{visibility: hidden;}}
-        footer {{visibility: hidden;}}
-        header {{visibility: hidden;}}
-
-        [data-testid="stAppViewContainer"] {{
-            padding-top: 130px !important;
-        }}
-        .fixed-header {{
+        .fixed-header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background-color: #ffffff;
-            box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
-            z-index: 1000;
-            padding: 20px 0;
-        }}
-        .header-content {{
-            max-width: 1000px;
-            margin: 0 auto;
+            background-color: white;
+            padding: 25px 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 50px;
-        }}
-        .header-title {{
+            border-bottom: 2px solid #800000;
+            z-index: 999;
+        }
+        .header-title {
             color: #800000;
-            font-size: 4rem;
-            font-weight: 900;
-            margin: 0;
-            letter-spacing: 0.5px;
-        }}
-        .header-logo {{
-            width: 150px;
-        }}
+            font-size: 46px;
+            font-weight: 700;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .content {
+            margin-top: 140px;
+        }
+        .predict-btn button {
+            width: 230px !important;
+            height: 60px !important;
+            font-size: 20px !important;
+            background-color: #800000 !important;
+            color: white !important;
+            border-radius: 10px !important;
+            font-weight: 600 !important;
+        }
     </style>
+""", unsafe_allow_html=True)
 
+# Fixed header HTML
+st.markdown("""
     <div class="fixed-header">
-        <div class="header-content">
-            <p class="header-title">NMIMS Loan Default Risk Predictor</p>
-            {"<img class='header-logo' src='data:image/png;base64," + logo_base64 + "'>" if logo_base64 else ""}
+        <div class="header-title">Credit Risk Evaluation – Current Default</div>
+        <div>
+            <img src="nmims-university-logo.png" width="140">
         </div>
     </div>
-"""
-st.markdown(header_html, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # --------------------------
-# 🧮 Input Section (Clean)
+# 🧮 User Inputs
 # --------------------------
-st.markdown("<div style='max-width:700px; margin:auto;'>", unsafe_allow_html=True)
-st.subheader("Enter Borrower Details")
+st.markdown('<div class="content">', unsafe_allow_html=True)
+st.subheader("Enter Applicant Details")
 
-income = st.text_input("Annual Income (₹)", value="600000")
-employment = st.selectbox("Employment Status", ["Salaried", "Self Employed"])
-location = st.selectbox("Location", ["Urban", "Rural"])
-loan_type = st.selectbox("Loan Type", ["Home", "Personal"])
-rating = st.selectbox("Credit Rating", ["Good", "Bad"])
+col1, col2 = st.columns(2)
 
-st.markdown("</div>", unsafe_allow_html=True)
+with col1:
+    income = st.text_input("Annual Income (₹)", value="600000")
+    employment = st.selectbox("Employment Status", ["Salaried", "Self Employed", "Unemployed"])
+    location = st.selectbox("Location", ["Urban", "Rural"])
+
+with col2:
+    loan_type = st.selectbox("Loan Type", ["Car", "Home", "Personal"])
+    rating = st.selectbox("Credit Score Rating", ["Good", "Bad"])
 
 # --------------------------
-# 🧠 Logistic Regression Model
+# 🧠 Logistic Regression Calculation
 # --------------------------
 try:
     income_val = float(income)
@@ -96,88 +86,61 @@ except:
     st.error("Please enter a valid numeric income value.")
     st.stop()
 
-loan_val = 1 if loan_type == "Personal" else 0
-emp_val = 1 if employment == "Self Employed" else 0
-loc_val = 1 if location == "Urban" else 0
-rating_val = 1 if rating == "Good" else 0
+# Employment encoding (base = Salaried)
+emp_self = 1 if employment == "Self Employed" else 0
+emp_unemp = 1 if employment == "Unemployed" else 0
 
+# Loan Type encoding (base = Car)
+loan_home = 1 if loan_type == "Home" else 0
+loan_personal = 1 if loan_type == "Personal" else 0
+
+# Credit Rating encoding (base = Bad)
+rating_good = 1 if rating == "Good" else 0
+
+# Location encoding (base = Rural)
+loc_urban = 1 if location == "Urban" else 0
+
+# --------------------------
+# 🔢 Logistic Regression Equation
+# --------------------------
 z = (
-    7.80381648105447
-    + (-1.17906553604e-05 * income_val)
-    + (2.17358068940713 * loan_val)
-    + (1.27679656359193 * emp_val)
-    + (-2.44313166027285 * loc_val)
-    + (-2.51690281035102 * rating_val)
+    5.3551976259790495
+    + (-0.0000259617687418 * income_val)
+    + (1.6580628910103044 * emp_self)
+    + (4.4818219836163369 * emp_unemp)
+    + (-2.4986504193573835 * loan_home)
+    + (1.6928703494225534 * loan_personal)
+    + (-4.6784777493614556 * rating_good)
+    + (-1.5705748584574404 * loc_urban)
 )
+
 prob_default = 1 / (1 + np.exp(-z))
 
 # --------------------------
-# 🎨 Predict Button (Centered)
+# 🚀 Predict Button
 # --------------------------
-st.markdown(
-    """
-    <style>
-        .center-button {
-            display: flex;
-            justify-content: center;
-            margin-top: 35px;
-            margin-bottom: 60px;
-        }
-        div.stButton > button:first-child {
-            background: linear-gradient(135deg, #800000 0%, #b00000 100%);
-            color: white;
-            font-weight: 700;
-            font-size: 22px;
-            border-radius: 14px;
-            padding: 1rem 2.5rem;
-            border: none;
-            box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-        }
-        div.stButton > button:first-child:hover {
-            background: linear-gradient(135deg, #a00000 0%, #d00000 100%);
-            transform: scale(1.05);
-        }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-col1, col2, col3 = st.columns([1, 1, 1])
-with col2:
-    predict_clicked = st.button("Predict Default Risk")
+st.markdown("<br><br><div class='predict-btn' style='text-align:center;'>", unsafe_allow_html=True)
+predict = st.button("Predict Current Default Risk")
+st.markdown("</div>", unsafe_allow_html=True)
 
 # --------------------------
-# 📊 Prediction Result (Professional Look)
+# 🎯 Output Display
 # --------------------------
-if predict_clicked:
-    st.markdown("<div style='margin-top: 2rem;'></div>", unsafe_allow_html=True)
-    st.markdown(
-        f"<h3 style='text-align:center; color:#222;'>Predicted Probability of Default: <b>{prob_default * 100:.2f}%</b></h3>",
-        unsafe_allow_html=True,
-    )
+if predict:
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.subheader("Prediction Result")
 
     if prob_default >= 0.5:
         st.markdown(
-            """
-            <div style='text-align:center; color:#b00000; 
-                        font-size:70px; font-weight:900; 
-                        margin-top:2rem;'>
-                RISKY
-            </div>
-            """,
-            unsafe_allow_html=True,
+            f"<h2 style='color:red; font-weight:700;'>Risky Applicant</h2>"
+            f"<h4>Predicted Probability of Default: {prob_default*100:.2f}%</h4>",
+            unsafe_allow_html=True
         )
     else:
         st.markdown(
-            """
-            <div style='text-align:center; color:#007700; 
-                        font-size:70px; font-weight:900; 
-                        margin-top:2rem;'>
-                NOT RISKY
-            </div>
-            """,
-            unsafe_allow_html=True,
+            f"<h2 style='color:green; font-weight:700;'>Not Risky</h2>"
+            f"<h4>Predicted Probability of Default: {prob_default*100:.2f}%</h4>",
+            unsafe_allow_html=True
         )
 
-    st.markdown("<div style='height:80px;'></div>", unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
