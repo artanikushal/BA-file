@@ -1,10 +1,10 @@
 import streamlit as st
 import numpy as np
 
-# --- Page Config ---
+# --- Page Setup ---
 st.set_page_config(page_title="Credit Risk Evaluation", layout="wide")
 
-# --- Remove Streamlit’s default menu, footer, etc. ---
+# --- Hide Streamlit’s default UI elements ---
 hide_default_format = """
     <style>
         #MainMenu {visibility: hidden;}
@@ -14,41 +14,30 @@ hide_default_format = """
 """
 st.markdown(hide_default_format, unsafe_allow_html=True)
 
-# --- Custom CSS for styling ---
+# --- Custom CSS for design ---
 st.markdown("""
 <style>
     body {
-        background-color: #f4f6f9;
+        background-color: #f7f9fb;
         color: #222;
         font-family: "Segoe UI", sans-serif;
     }
     .main-header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        text-align: center;
         background-color: white;
-        padding: 25px 0;
-        border-bottom: 3px solid #eee;
-        position: fixed;
-        top: 0;
-        width: 100%;
-        z-index: 999;
-        box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
-    }
-    .main-header img {
-        height: 90px;
-        margin-right: 20px;
+        padding: 30px 0 15px 0;
+        box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
+        margin-bottom: 50px;
     }
     .main-header h1 {
-        font-size: 42px;
+        font-size: 44px;
         font-weight: 750;
-        letter-spacing: 0.5px;
-        margin: 0;
         color: #003366;
+        letter-spacing: 0.8px;
     }
     .content {
-        margin-top: 180px;
-        padding: 20px 60px;
+        margin-top: 40px;
+        padding: 0 80px;
     }
     .stSelectbox label, .stNumberInput label {
         font-weight: 600 !important;
@@ -61,16 +50,20 @@ st.markdown("""
         padding: 10px 20px;
         box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
     }
+    .predict-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 60px;
+    }
     .stButton > button {
-        display: block;
-        margin: 50px auto 0;
-        font-size: 20px !important;
+        font-size: 22px !important;
         font-weight: 600;
         background-color: #2b7de9 !important;
         color: white !important;
         border: none !important;
         border-radius: 10px;
-        padding: 14px 60px;
+        padding: 16px 70px;
         box-shadow: 0 4px 10px rgba(43,125,233,0.3);
         transition: all 0.2s ease-in-out;
     }
@@ -79,31 +72,29 @@ st.markdown("""
         transform: scale(1.03);
     }
     .output-container {
-        margin-top: 50px;
+        margin-top: 60px;
         text-align: center;
     }
     .output-text {
-        font-size: 42px;
-        font-weight: 800;
-        letter-spacing: 1px;
+        font-size: 68px;
+        font-weight: 900;
         text-align: center;
-        margin-top: 20px;
+        margin-top: 30px;
+        letter-spacing: 2px;
+    }
+    .prob-text {
+        font-size: 22px;
+        font-weight: 500;
+        color: #444;
+        margin-top: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# --- Header with logo ---
-st.markdown(
-    """
-    <div class='main-header'>
-        <img src='https://raw.githubusercontent.com/kushalartani/assets/main/logo.png'>
-        <h1>CREDIT RISK EVALUATION</h1>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+# --- Header ---
+st.markdown("<div class='main-header'><h1>CREDIT RISK EVALUATION</h1></div>", unsafe_allow_html=True)
 
-# --- Main content section ---
+# --- Input Section ---
 st.markdown("<div class='content'>", unsafe_allow_html=True)
 st.subheader("Enter Customer Details")
 
@@ -120,7 +111,7 @@ with col2:
 with col3:
     monthly_income = st.number_input("Monthly Income", min_value=1000, step=100, value=30000)
 
-# --- Encode variables ---
+# --- Encode categorical values ---
 income = monthly_income
 emp_self = 1 if employment_status == "Self Employed" else 0
 emp_unemp = 1 if employment_status == "Unemployed" else 0
@@ -129,7 +120,7 @@ loan_personal = 1 if loan_type == "Personal" else 0
 credit_good = 1 if credit_score == "Good" else 0
 loc_urban = 1 if location == "Urban" else 0
 
-# --- Logistic Regression Coefficients ---
+# --- Logistic regression coefficients ---
 intercept = 5.3551976259790495
 coef_income = -0.0000259617687418
 coef_emp_self = 1.6580628910103044
@@ -139,7 +130,7 @@ coef_loan_personal = 1.6928703494225534
 coef_credit_good = -4.6784777493614556
 coef_loc_urban = -1.5705748584574404
 
-# --- Prediction Calculation ---
+# --- Logistic calculation ---
 log_odds = (
     intercept
     + coef_income * income
@@ -152,13 +143,16 @@ log_odds = (
 )
 prob_default = 1 / (1 + np.exp(-log_odds))
 
-# --- Display output ---
+# --- Predict Button (centered) ---
+st.markdown("<div class='predict-btn'>", unsafe_allow_html=True)
 if st.button("Predict Credit Risk"):
     st.markdown("<div class='output-container'>", unsafe_allow_html=True)
+
     if prob_default >= 0.5:
         st.markdown("<p class='output-text' style='color:#cc0000;'>RISKY</p>", unsafe_allow_html=True)
     else:
         st.markdown("<p class='output-text' style='color:#009900;'>NOT RISKY</p>", unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
 
+    st.markdown(f"<p class='prob-text'>Default Probability: <b>{prob_default*100:.2f}%</b></p>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 st.markdown("</div>", unsafe_allow_html=True)
