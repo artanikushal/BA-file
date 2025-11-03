@@ -89,6 +89,7 @@ st.markdown("""
     .output-container {
         margin-top: 60px;
         text-align: center;
+        justify-content: center
     }
     .output-text {
         font-size: 2000px;
