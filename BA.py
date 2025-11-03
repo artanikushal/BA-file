@@ -122,7 +122,7 @@ with col2:
     credit_score = st.selectbox("Credit Score Rating", ["Good", "Bad"])
     location = st.selectbox("Location", ["Urban", "Rural"])
 with col3:
-    monthly_income = st.number_input("Monthly Income", min_value=1000, step=100, value=30000)
+    monthly_income = st.number_input("Monthly Family Income", min_value=1000, step=100, value=30000)
 
 # ---------------- ENCODE INPUTS ----------------
 income = monthly_income
