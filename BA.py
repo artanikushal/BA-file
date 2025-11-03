@@ -30,10 +30,10 @@ st.markdown("""
         margin-bottom: 50px;
     }
     .main-header h1 {
-        font-size: 44px;
-        font-weight: 750;
+        font-size: 46px;
+        font-weight: 800;
         color: #003366;
-        letter-spacing: 0.8px;
+        letter-spacing: 1px;
     }
     .content {
         margin-top: 40px;
@@ -41,7 +41,7 @@ st.markdown("""
     }
     .stSelectbox label, .stNumberInput label {
         font-weight: 600 !important;
-        font-size: 16px !important;
+        font-size: 17px !important;
         color: #003366 !important;
     }
     .stSelectbox, .stNumberInput {
@@ -54,16 +54,17 @@ st.markdown("""
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-top: 60px;
+        margin-top: 70px;
+        margin-bottom: 40px;
     }
     .stButton > button {
-        font-size: 22px !important;
+        font-size: 24px !important;
         font-weight: 600;
         background-color: #2b7de9 !important;
         color: white !important;
         border: none !important;
         border-radius: 10px;
-        padding: 16px 70px;
+        padding: 18px 80px;
         box-shadow: 0 4px 10px rgba(43,125,233,0.3);
         transition: all 0.2s ease-in-out;
     }
@@ -76,17 +77,17 @@ st.markdown("""
         text-align: center;
     }
     .output-text {
-        font-size: 68px;
+        font-size: 80px;
         font-weight: 900;
         text-align: center;
         margin-top: 30px;
         letter-spacing: 2px;
     }
     .prob-text {
-        font-size: 22px;
-        font-weight: 500;
-        color: #444;
-        margin-top: 10px;
+        font-size: 32px;
+        font-weight: 600;
+        color: #333;
+        margin-top: 20px;
     }
 </style>
 """, unsafe_allow_html=True)
