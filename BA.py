@@ -1,100 +1,81 @@
-# ==========================
-# 🎓 NMIMS Loan Default Predictor Dashboard
-# Problem 2: Credit Risk Evaluation – Current Default
-# ==========================
-
 import streamlit as st
+import joblib
 import numpy as np
 from PIL import Image
 
-# --------------------------
-# 🏠 Page setup
-# --------------------------
-st.set_page_config(page_title="Credit Risk Evaluation - Current Default", layout="wide")
+# Load your trained model
+model = joblib.load("model.pkl")  # Ensure model.pkl is in the same folder
 
-# --------------------------
-# 🎨 Custom CSS
-# --------------------------
+# --- Page Config ---
+st.set_page_config(page_title="Credit Risk Evaluation", layout="wide")
+
+# --- Custom CSS for styling ---
 st.markdown("""
-    <style>
-        .fixed-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: white;
-            padding: 25px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #800000;
-            z-index: 999;
-        }
-        .header-title {
-            color: #800000;
-            font-size: 46px;
-            font-weight: 700;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        .content {
-            margin-top: 140px;
-        }
-        .predict-btn button {
-            width: 230px !important;
-            height: 60px !important;
-            font-size: 20px !important;
-            background-color: #800000 !important;
-            color: white !important;
-            border-radius: 10px !important;
-            font-weight: 600 !important;
-        }
-        .st-emotion-cache-18ni7ap {
-            visibility: hidden; /* Hide Streamlit settings menu */
-        }
-    </style>
+<style>
+    body {
+        background-color: #f9f9f9;
+        color: #222;
+    }
+    .main-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
+        padding: 20px 0;
+        border-bottom: 2px solid #eee;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 999;
+    }
+    .main-header img {
+        height: 80px;
+        margin-right: 20px;
+    }
+    .main-header h1 {
+        font-size: 36px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin: 0;
+    }
+    .content {
+        margin-top: 160px;
+        padding: 20px;
+    }
+    .stButton > button {
+        display: block;
+        margin: 30px auto;
+        font-size: 18px !important;
+        font-weight: 600;
+        background-color: #2b7de9 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px;
+        padding: 12px 40px;
+    }
+    .output-text {
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        margin-top: 30px;
+    }
+</style>
 """, unsafe_allow_html=True)
 
-# --------------------------
-# 🧾 Header Section
-# --------------------------
-st.markdown("""
-    <div class="fixed-header">
-        <div class="header-title">Credit Risk Evaluation – Current Default</div>
-        <div>
-            <img src="nmims-university-logo.png" width="140">
-        </div>
+# --- Header with logo ---
+st.markdown(
+    """
+    <div class='main-header'>
+        <img src='https://raw.githubusercontent.com/kushalartani/assets/main/logo.png'>
+        <h1>CREDIT RISK EVALUATION</h1>
     </div>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
 
-# --------------------------
-# 🧮 User Inputs
-# --------------------------
-st.markdown('<div class="content">', unsafe_allow_html=True)
-st.subheader("Enter Applicant Details")
+# --- Main content ---
+st.markdown("<div class='content'>", unsafe_allow_html=True)
 
-col1, col2 = st.columns(2)
-
-with col1:
-    income = st.text_input("Monthly Income (₹)", value="50000")
-    employment = st.selectbox("Employment Status", ["Salaried", "Self Employed", "Unemployed"])
-    location = st.selectbox("Location", ["Urban", "Rural"])
-
-with col2:
-    loan_type = st.selectbox("Loan Type", ["Car", "Home", "Personal"])
-    rating = st.selectbox("Credit Score Rating", ["Good", "Bad"])
-
-# --------------------------
-# 🔢 Input Processing
-# --------------------------
-try:
-    income_val = float(income)
-except:
-    st.error("Please enter a valid numeric income value.")
-    st.stop()
-
-# Employment encoding (base = Salaried)
-emp_self = 1 if employment == "Self Employed" else 0
-emp_unemp = 1 if employment == "Unemployed" else 0
-
-# Loan Type encoding (base = Car)
-loan_home = 1 if loan_type == "Home
+# Upload logo or image section
+uploaded_image = st.file_uploader("Upload Logo or Image (optional)", type=["png", "jpg", "jpeg"])
+if u
