@@ -77,5 +77,4 @@ st.markdown(
 st.markdown("<div class='content'>", unsafe_allow_html=True)
 
 # Upload logo or image section
-uploaded_image = st.file_uploader("Upload Logo or Image (optional)", type=["png", "jpg", "jpeg"])
-if u
+uploaded
