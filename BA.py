@@ -91,13 +91,13 @@ st.markdown("""
         text-align: center;
     }
     .output-text {
-        font-size: 270px;
+        font-size: 2000px;
         font-weight: 900;
         letter-spacing: 2px;
         margin-top: 20px;
     }
     .prob-text {
-        font-size: 180px;
+        font-size: 2000px;
         font-weight: 600;
         color: #222;
         margin-top: 15px;
